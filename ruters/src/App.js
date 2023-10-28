@@ -1,4 +1,4 @@
-import { Routes, Route, Link, Outlet, useParams } from 'react-router-dom';
+import { Routes, Route, Link, NavLink, Outlet, useParams, useMatch } from 'react-router-dom';
 import styles from './app.module.css';
 
 const fetchContactList = () => [
@@ -13,6 +13,19 @@ const fetchContact = (id) =>
   2: { id: 2, name: 'Storage', address: 'Khimki, 245', hours: '10-17' },
   3: { id: 3, name: 'Fabric', address: 'Kislovodsk, 3a', hours: '24' },
 }[id]);
+
+const ExtendedLink = ({ to, children }) => (
+  <NavLink to={to}>
+    {
+      ({ isActive }) => isActive ?
+        <>
+          <span>{children}</span>
+          <span>-- you are here"</span>
+        </>
+        : children
+    }
+  </NavLink>
+);
 
 const MainPage = () => <div>Main Page</div>;
 
@@ -35,6 +48,9 @@ const ContactNotFound = () => <div>This contact doesn't exist</div>;
 
 const Contact = () => {
   const params = useParams();
+  const urlMatchData = useMatch('/contacts/:type/:id');
+  console.log(urlMatchData);
+  console.log(urlMatchData.params.type);
 
   const contact = fetchContact(params.id);
 
@@ -62,9 +78,9 @@ export const App = () => {
       <header className={styles.appHeader}>
         <h3>Menu</h3>
         <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/about">About</Link></li>
-          <li><Link to="/contacts">Contacts</Link></li>
+          <li><ExtendedLink to="/">Home</ExtendedLink></li>
+          <li><NavLink to="/about">About</NavLink></li>
+          <li><NavLink to="/contacts">Contacts</NavLink></li>
         </ul>
       </header>
       <Routes>
@@ -72,6 +88,7 @@ export const App = () => {
         <Route path='/about' element={<AboutPage />} />
         <Route path='/contacts' element={<ContactsPage />}>
           <Route path='contact/:id' element={<Contact />} />
+          <Route path='service/:id' element={<Contact />} />
         </Route>
         <Route path='*' element={<NotFound404 />} />
       </Routes>

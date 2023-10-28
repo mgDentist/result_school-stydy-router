@@ -13,3 +13,8 @@
   color: white;
 }
 
+:global .active {
+  text-decoration: none;
+  color: gold;
+}
+
